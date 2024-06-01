@@ -25,3 +25,17 @@ func (s *UserStore) InsertUser(user types.User) (int, error) {
 	}
 	return newId, nil
 }
+
+func (s *UserStore) GetUserById(id int) (types.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var user types.User
+	statement := `select * from users where id = $1`
+
+	err := s.Db.QueryRowContext(ctx, statement, id).Scan(&user)
+	if err != nil {
+		return types.User{}, nil
+	}
+	return user, nil
+}
