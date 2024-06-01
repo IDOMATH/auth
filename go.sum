@@ -1,2 +1,4 @@
 github.com/IDOMATH/session v0.0.0-20240425143228-aeb4b6cf9289 h1:BWwLAwPMqj6gFN8/6DXxFyp5NRG317YiWdC3WqhjoTo=
 github.com/IDOMATH/session v0.0.0-20240425143228-aeb4b6cf9289/go.mod h1:+n0Dj1Z8SmmUNPxyXXqo2d1V+tyGpkXkCU/teExlm4E=
+golang.org/x/crypto v0.23.0 h1:dIJU/v2J8Mdglj/8rJ6UUOM3Zc9zLZxVZwwxMooUSAI=
+golang.org/x/crypto v0.23.0/go.mod h1:CKFgDieR+mRhux2Lsu27y0fO304Db0wZe70UKqHu0v8=

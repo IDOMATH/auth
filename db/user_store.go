@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"go/types"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserStore struct {
@@ -26,16 +28,19 @@ func (s *UserStore) InsertUser(user types.User) (int, error) {
 	return newId, nil
 }
 
-func (s *UserStore) GetUserById(id int) (types.User, error) {
+func (s *UserStore) Authenticate(username, password string) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	var user types.User
-	statement := `select * from users where id = $1`
+	var id int
+	var passwordHash string
+	statement := `select id, password_hash from users where username = $1`
 
-	err := s.Db.QueryRowContext(ctx, statement, id).Scan(&user)
+	err := s.Db.QueryRowContext(ctx, statement, username).Scan(&id, passwordHash)
 	if err != nil {
-		return types.User{}, nil
+		return 0, err
 	}
-	return user, nil
+
+	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
+	return id, nil
 }
