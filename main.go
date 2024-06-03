@@ -10,7 +10,8 @@ import (
 )
 
 type Repository struct {
-	memstore *memorystore.MemoryStore
+	memstore  *memorystore.MemoryStore
+	userStore *db.UserStore
 }
 
 func NewRepository() *Repository {
@@ -46,5 +47,16 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) auth(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		isAuth, err := repo.userStore.Authenticate(r.Form.Get("username"), r.Form.Get("password"))
+		if err != nil {
+			fmt.Errorf("unable to authenticate: ", err)
+		}
+		if isAuth > 0 {
+			fmt.Println("Authenticated")
+		}
 
+		next(w, r)
+
+	}
 }
