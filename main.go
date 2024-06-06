@@ -6,7 +6,9 @@ import (
 	"net/http"
 
 	"github.com/IDOMATH/auth/db"
+	"github.com/IDOMATH/auth/types"
 	"github.com/IDOMATH/session/memorystore"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Repository struct {
@@ -44,6 +46,18 @@ func main() {
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome Home"))
+}
+
+func (repo *Repository) handlePostUser(w http.ResponseWriter, r *http.Request) {
+	username := r.Form.Get("username")
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		w.Write([]byte("could not generate password hash"))
+	}
+
+	repo.userStore.InsertUser(types.User{Username: username, Email: email, PasswordHash: string(passwordHash)})
 }
 
 func (repo *Repository) auth(next http.HandlerFunc) http.HandlerFunc {
