@@ -37,11 +37,16 @@ func main() {
 	}
 
 	fmt.Println("Connected to Postgres")
-
 	fmt.Println("hello world")
+
 	memstore := memorystore.New()
 	repo := NewRepository()
 	repo.memstore = memstore
+
+	router := http.NewServeMux()
+	router.HandleFunc("GET /", handleHome)
+	router.HandleFunc("POST /user/", repo.handlePostUser)
+
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
