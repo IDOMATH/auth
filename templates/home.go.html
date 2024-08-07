@@ -1,3 +1,12 @@
 {{define "content"}}
-        <h1>Welcome Home</h1>
+    <h1>Welcome Home</h1>    
+    <form hx-target="#contacts" hx-post="/contacts">
+        email: <input 
+            {{ if .Form.Values.email }} value="{{ .Form.Values.email }}" {{ end }}
+            type="text" name="email"/>
+        password: <input
+            {{ if .Form.Values.password }} values="{{ .Form.Values.password }}" {{ end }} 
+            type="text" name="password"/>
+        <button type="submit">Create Contact</button>
+    </form>
 {{end}}
