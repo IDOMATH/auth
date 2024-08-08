@@ -10,9 +10,10 @@ import (
 )
 
 const templatesLocation = "./templates"
+const fileExtension = ".html"
 
 func Render(w http.ResponseWriter, r *http.Request, tmpl string, data *types.TemplateData) error {
-	page, err := filepath.Glob(fmt.Sprintf("./templates/%s.go.html"))
+	page, err := filepath.Glob(fmt.Sprintf("%s/%s%s", templatesLocation, tmpl, fileExtension))
 	if err != nil {
 		return fmt.Errorf("unable to find template")
 	}
