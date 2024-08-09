@@ -3,9 +3,9 @@ package db
 import (
 	"context"
 	"database/sql"
-	"go/types"
 	"time"
 
+	"github.com/IDOMATH/auth/types"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -42,5 +42,8 @@ func (s *UserStore) Authenticate(username, password string) (int, error) {
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
+	if err != nil {
+		return 0, err
+	}
 	return id, nil
 }
