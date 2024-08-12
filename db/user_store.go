@@ -13,6 +13,12 @@ type UserStore struct {
 	Db *sql.DB
 }
 
+func NewUserStore(conn *sql.DB) *UserStore {
+	return &UserStore{
+		Db: conn,
+	}
+}
+
 func (s *UserStore) InsertUser(user types.User) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
