@@ -1,6 +1,8 @@
 package util
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -13,9 +15,25 @@ const templatesLocation = "./templates"
 const fileExtension = ".html"
 
 func Render(w http.ResponseWriter, r *http.Request, tmpl string, data *types.TemplateData) error {
-	page, err := filepath.Glob(fmt.Sprintf("%s/%s%s", templatesLocation, tmpl, fileExtension))
+	tc, err := CreateTemplateCache()
 	if err != nil {
-		return fmt.Errorf("unable to find template")
+		return err
+	}
+
+	t, ok := tc[tmpl]
+	if !ok {
+		return errors.New("can't get template from cache")
+	}
+	buf := new(bytes.Buffer)
+
+	err = t.Execute(buf, data)
+	if err != nil {
+		return err
+	}
+
+	_, err = buf.WriteTo(w)
+	if err != nil {
+		return err
 	}
 
 	return nil
