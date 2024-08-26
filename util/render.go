@@ -53,6 +53,20 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		if err != nil {
 			return tmplCache, err
 		}
+
+		matches, err := filepath.Glob(fmt.Sprintf("%s/*%s", templatesLocation, fileExtension))
+		if err != nil {
+			return tmplCache, err
+		}
+
+		if len(matches) > 0 {
+			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*%s", templatesLocation, fileExtension))
+			if err != nil {
+				return tmplCache, err
+			}
+		}
+		tmplCache[name] = ts
 	}
+
 	return tmplCache, nil
 }
