@@ -42,6 +42,7 @@ func main() {
 	memstore := memorystore.New()
 	repo := NewRepository()
 	repo.memstore = memstore
+	repo.userStore = db.NewUserStore(postgresDb.SQL)
 
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", handleHome)
