@@ -7,6 +7,7 @@ import (
 
 	"github.com/IDOMATH/auth/db"
 	"github.com/IDOMATH/auth/types"
+	"github.com/IDOMATH/auth/util"
 	"github.com/IDOMATH/session/memorystore"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -63,14 +64,22 @@ func (repo *Repository) handlePostUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("could not generate password hash"))
 	}
 
-	repo.userStore.InsertUser(types.User{Username: username, Email: email, PasswordHash: string(passwordHash)})
+	_, err = repo.userStore.InsertUser(types.User{Username: username, Email: email, PasswordHash: string(passwordHash)})
+	if err != nil {
+		util.Render(w, r, "error.go.html", &types.TemplateData{PageName: "Error"})
+	}
+	util.Render(w, r, "new-user.go.html", &types.TemplateData{PageName: "Success"})
+}
+
+func (repo *Repository) handleGetUser(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func (repo *Repository) auth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		isAuth, err := repo.userStore.Authenticate(r.Form.Get("username"), r.Form.Get("password"))
 		if err != nil {
-			fmt.Errorf("unable to authenticate: ", err)
+			fmt.Println("unable to authenticate: ", err)
 		}
 		if isAuth > 0 {
 			fmt.Println("Authenticated")
