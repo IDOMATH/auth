@@ -72,6 +72,14 @@ func (repo *Repository) handlePostUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (repo *Repository) handleGetUser(w http.ResponseWriter, r *http.Request) {
+	username := r.Form.Get("username")
+	password := r.Form.Get("password")
+
+	_, err := repo.userStore.Authenticate(username, password)
+	if err != nil {
+		util.Render(w, r, "error.go.html", &types.TemplateData{PageName: "Error"})
+	}
+	util.Render(w, r, "success.go.html", &types.TemplateData{PageName: "Success"})
 
 }
 
