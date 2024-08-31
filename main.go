@@ -48,6 +48,7 @@ func main() {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", handleHome)
 	router.HandleFunc("POST /user/", repo.handlePostUser)
+	router.HandleFunc("GET /user/", repo.handleGetUser)
 
 }
 
